@@ -1,4 +1,4 @@
-import React,{ Component, useState } from 'react'
+import React,{ Component } from 'react'
 import Web3 from 'web3'
 import { ethers } from "ethers";
 import './App.css';
@@ -9,6 +9,8 @@ import GamingAddress from './contractsData/Gaming-address.json'
 
 
 class App extends Component{
+
+
     constructor(props){
 	super(props)
 	this.state = { selectedOption: ' ', wager: 0, account: '', player1: '' ,
@@ -23,8 +25,6 @@ class App extends Component{
 	this.handleChange = this.handleChange.bind(this)
         this.onValueChange = this.onValueChange.bind(this);
 	this.handleSubmit = this.handleSubmit.bind(this)
-        this.contentRef = React.createRef();
-
     }
 
 
@@ -33,32 +33,13 @@ class App extends Component{
     }
 
 
-
-
-
-
-	// Sample wait function to wait for a transaction to be mined
-async waitForTransaction(txHash) {
-  console.log(`Waiting for transaction ${txHash} to be mined...`);
-  let receipt = null;
-
-  while (receipt === null) {
-    // Wait for 1 second
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    receipt = await Web3.eth.getTransactionReceipt(txHash);
-  }
-
-  console.log("Transaction mined!");
-  return receipt;
-}
-
     async loadBlockchainData(){
     
- // const [playerSessions, setPlayerSessions] = useState([]);
+
 //    const  loadBlockchainData = async () =>{
 
 
-	    const web3 = new Web3(new Web3.providers.HttpProvider("http://ec2-34-221-100-136.us-west-2.compute.amazonaws.com:8545"))
+	    const web3 = new Web3(new Web3.providers.HttpProvider("http://ec2-34-221-105-101.us-west-2.compute.amazonaws.com:8545"))
     var account;
     const accounts  = await web3.eth.getAccounts()
     console.log(accounts)
@@ -104,6 +85,8 @@ async waitForTransaction(txHash) {
 	
 //await tx.wait;
 console.log("el fini")
+//	    gameRound =   await contract.methods.winOrLose(10, false).call(console.log)
+//	gameRound =   await contract.methods.winOrLose(10, false).call(console.log)
 
 }
 
@@ -112,12 +95,6 @@ console.log("el fini")
 
 // Form submitting logic, prevent default page refresh
 async handleSubmit(event){
-
-  const privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-
-
-//const [count, setCount] = useState(0);
-        var resultOutput;
 	const { selectedOption, wager, history, result } = this.state
 	event.preventDefault()
 	console.log(this.state.selectedOption)
@@ -137,47 +114,22 @@ async handleSubmit(event){
 	}
 	console.log("HigherThanMysteryNumber",HigherThanMysteryNumber)
 	console.log("this.state.wager",this.state.wager)	
+	// 
+	//this.state.contract. <method> !!!!!
+	// do I need await for this method? 
 	// works!!!!!   
-try { 
-//  const data = contract.methods.exampleFunction().encodeABI();
-const data =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).encodeABI(); 
+try {
+const tx =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).then((f) => console.log(f))
+	//this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).then((result) => console.log(result.logs(0)))
+	//this.state.contract.methods.winOrLose(10, false).send({from: this.state.player1 ,value: this.state.web3.utils.toWei('1', 'ether')}).then((f) => console.log(f))
+	//this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei('1', 'ether')}).then((f) => console.log(f))
+//const receipt  = await wait(tx);// tx.wait();
 
-
-
-  const tx = {
-    to: GamingAddress.address, //i//contractAddress,
-    data,
-    gas: 2000000,
-  };
-
-  const signedTx = await Web3.eth.accounts.signTransaction(tx, privateKey);
-
-  const txHash = await Web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-  console.log(`Transaction sent with hash: ${txHash.transactionHash}`);
-
-  // Wait for the transaction to be mined
- 
-  let receipt = null;
-
-  while (receipt === null) {
-    // Wait for 1 second
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    receipt = await Web3.eth.getTransactionReceipt(txHash);
-  }
-
-  console.log("Transaction mined!");
+//await tx.wait();
 
 
 
 
-//	const receipt = await waitForTransaction(txHash.transactionHash);
-//  console.log("Transaction receipt:", receipt);
-
-
-
-
-//	try {
-//const tx =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')})   //.then((f) => console.log(f))
 
 }
 catch(error){
@@ -211,46 +163,164 @@ const newResult = this.state.result;
                 console.log(events[0].returnValues)
 
                 console.log('junk')
+  //   console.log("1 historyData wgaer  ===>" , this.state.wager )
 
+   //             console.log("i2 historyData player1  ===>" , this.state.player1 )
+
+
+
+
+//		console.log('this.state.historyData', this.state.historyData)
+
+//		const newHistory  = this.state.historyData
 const objectLength = Object.keys(events).length
                 console.log('objectLength', objectLength )   
 		console.log('events[1].returnValues.toString()', events[1].returnValues.toString() )
 
 		console.log('events[1].returnValues', events[1].returnValues)
-		newHistory.push( "test")
+		newHistory.push( JSON.stringify(events[objectLength-1].returnValues[4]) )
+         
 
+// newHistory.push( { historyData: [JSON.stringify(events[1].returnValues[4])] 
+
+
+
+
+		//    const newResult                 newHistory.push( { historyData: [JSON.stringify(events[1].returnValues[4])]  } 
+		//
+		//
+		//
+		//    )= [] 
+
+//		newResult.push({ result: JSON.stringify(events[objectLength-1].returnValues[4]) } )
  console.log("JSON string",  JSON.stringify(events[1].returnValues[4])  )
  console.log("JSON string2 ",  JSON.stringify(events[objectLength-1].returnValues[4])  )
 console.log("new history", newHistory)
-newHistory.push(JSON.stringify(events[objectLength-1].returnValues[4]));
 
-		//setResults("testt")
-//this.contentRef.current.textContent =  JSON.stringify(events[objectLength-1].returnValues[4]);
-resultOutput =  JSON.stringify(events[objectLength-1].returnValues[4]);
-console.log("resultOuptut line 182", resultOutput)
+
+     //   var obj=JSON.parse(JSON.stringify(events));
+     //   var array = Object.keys(obj)
+     //   console.log("pre error ... returned values (last one) ",obj[array[1]].returnValues);
+
+
+//		this.setState({ history:  JSON.stringify(obj[array[1]].returnValues) })
+  //      console.log("returned values (last one) ",obj[array[1]].returnValues);
+  //      const newHistory = this.state.historyData
+  //      newHistory.push({ historyData: JSON.stringify(obj[array[1]].returnValues) } )
+   //     this.setState({ historyData :  newHistory })
+        
+
+
+        //        console.log("historyData wgaer  ===>" , this.state.wager )
+
+          //      console.log("historyData player1  ===>" , this.state.player1 )
+ 
+	//	console.log("historyData   ===>" , this.state.historyData )
+
+
+
+
 
 	})
 	.catch(function(error) {
 		console.log(error);
 	});
-this.contentRef.current.textContent = newHistory //newHistory[1]  
+
        this.setState({ historyData: newHistory } )   
    this.setState({ result: newResult } )
-//this.onValueChange()
-// works   ( with string passed in )
-console.log("test")
-console.log("resultOutput", "crapola" )    // resultOutput)
-//console.log("JSON.stringify(events[objectLength-1].returnValues[4])", JSON.stringify(events[objectLength-1].returnValues[4]))
 
 
-//this.contentRef.current.textContent = "crap20"
-
-
-// this.state.result  // "junk"//resultOutput; //JSON.stringify(events[objectLength-1].returnValues[4]);
 	//   this.setState({ result: JSON.stringify(events[objectLength].returnValues[4]) } )
+
+
+
+	       //	,
+//	(err, events) => { console.log(events.length)
+//console.log("events.returnedValues['0']", events.returnValues[0])
+//console.log("events.returnedValues['0']", events.returnValues["guess"])
+
+
+
+//      if (!err){
+//        var obj=JSON.parse(JSON.stringify(events));
+//        var array = Object.keys(obj)
+//	this.setState({ history:  JSON.stringify(obj[array[1]].returnValues) })
+//        console.log("returned values (last one) ",obj[array[1]].returnValues);
+//	const newHistory = this.state.historyData
+//	newHistory.push({ historyData: JSON.stringify(obj[array[1]].returnValues) } )
+//	this.setState({ historyData :  newHistory })
+//	console.log("historyData   ===>" , this.state.historyData )
+//
+//      }
+//      else {
+//        console.log(err)
+//      }
+
+
+// } 
+
+
+//)
+
+
 }
 
 
+
+async handleSubmitWithHistory(event){
+	const { selectedOption, wager, history } = this.state
+	event.preventDefault()
+	console.log(this.state.selectedOption)
+	alert("this.state.selectedOption")
+	alert( this.state.selectedOption)
+	let  HigherThanMysteryNumber = "true"
+	if (this.state.selectedOption == "High") {
+		HigherThanMysteryNumber = true
+	}
+	else{
+		HigherThanMysteryNumber = false
+	}
+ 	alert("HigherThanMysteryNumber")
+ 	alert(HigherThanMysteryNumber)
+	if (HigherThanMysteryNumber) { 
+		alert ("yessss")
+	}
+	console.log("HigherThanMysteryNumber",HigherThanMysteryNumber)
+	console.log("this.state.wager",this.state.wager)	
+	// 
+	//this.state.contract. <method> !!!!!
+	// do I need await for this method? 
+	// works!!!!!   
+  this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).then((f) => console.log(f))
+	//this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).then((result) => console.log(result.logs(0)))
+	//this.state.contract.methods.winOrLose(10, false).send({from: this.state.player1 ,value: this.state.web3.utils.toWei('1', 'ether')}).then((f) => console.log(f))
+	//this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei('1', 'ether')}).then((f) => console.log(f))
+
+	console.log("player1, account1", this.state.player1)
+
+
+
+    	const initialBalance = await this.state.web3.eth.getBalance(this.state.player1)
+	alert("initialBalance     " + String(initialBalance));
+	alert(initialBalance)
+	console.log("initialBalance",initialBalance)
+	const currentBalanceInEther = Number(this.state.web3.utils.fromWei(initialBalance, 'ether'))
+	alert("currentBalanceInEther   " + String(currentBalanceInEther));
+	console.log("currentBalanceInEther",currentBalanceInEther)
+
+
+
+
+	this.state.contract.getPastEvents(
+	'AllEvents',
+	{
+		fromBlock: 0,
+		toBlock: 'latest'
+	},
+	(err, events) => { console.log(events.length) } 
+)
+
+}
 
 // input changes of all the input field using ES6
 // javascript feature computed property names
@@ -260,16 +330,11 @@ handleChange(event){
     });
 }
 
-onValueChange(event) {
+  onValueChange(event) {
     this.setState({
       selectedOption: event.target.value
     });
-}
- // const handleStateChange = (value) => {
- //   setParentState(value);
-//  };
-
-
+  }
 // Return a controlled form i.e. values of the
 // input field not stored in DOM values are exist
 // in react component itself as state
@@ -304,8 +369,6 @@ render(){
           Selected option is : {this.state.selectedOption}
 	  Current History is: {  JSON.stringify(this.state.historyData) }
           last round:       { JSON.stringify(this.state.result) }   
-
-
 		</div>
 		<div>
 		<label htmlFor='wager'>wager</label>
@@ -319,10 +382,7 @@ render(){
 				<div>
 		<button>Play Round!</button>
 		</div>
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1>Class-Based Component Example</h1>
-        <p ref={this.contentRef}>Waiting for updates...</p>
-      </div>	
+	
 
 </form>
 

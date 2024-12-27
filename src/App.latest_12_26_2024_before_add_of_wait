@@ -32,26 +32,6 @@ class App extends Component{
 		this.loadBlockchainData()
     }
 
-
-
-
-
-
-	// Sample wait function to wait for a transaction to be mined
-async waitForTransaction(txHash) {
-  console.log(`Waiting for transaction ${txHash} to be mined...`);
-  let receipt = null;
-
-  while (receipt === null) {
-    // Wait for 1 second
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    receipt = await Web3.eth.getTransactionReceipt(txHash);
-  }
-
-  console.log("Transaction mined!");
-  return receipt;
-}
-
     async loadBlockchainData(){
     
  // const [playerSessions, setPlayerSessions] = useState([]);
@@ -113,9 +93,6 @@ console.log("el fini")
 // Form submitting logic, prevent default page refresh
 async handleSubmit(event){
 
-  const privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-
-
 //const [count, setCount] = useState(0);
         var resultOutput;
 	const { selectedOption, wager, history, result } = this.state
@@ -138,46 +115,8 @@ async handleSubmit(event){
 	console.log("HigherThanMysteryNumber",HigherThanMysteryNumber)
 	console.log("this.state.wager",this.state.wager)	
 	// works!!!!!   
-try { 
-//  const data = contract.methods.exampleFunction().encodeABI();
-const data =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')}).encodeABI(); 
-
-
-
-  const tx = {
-    to: GamingAddress.address, //i//contractAddress,
-    data,
-    gas: 2000000,
-  };
-
-  const signedTx = await Web3.eth.accounts.signTransaction(tx, privateKey);
-
-  const txHash = await Web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-  console.log(`Transaction sent with hash: ${txHash.transactionHash}`);
-
-  // Wait for the transaction to be mined
- 
-  let receipt = null;
-
-  while (receipt === null) {
-    // Wait for 1 second
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    receipt = await Web3.eth.getTransactionReceipt(txHash);
-  }
-
-  console.log("Transaction mined!");
-
-
-
-
-//	const receipt = await waitForTransaction(txHash.transactionHash);
-//  console.log("Transaction receipt:", receipt);
-
-
-
-
-//	try {
-//const tx =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')})   //.then((f) => console.log(f))
+try {
+const tx =   this.state.contract.methods.winOrLose(10, HigherThanMysteryNumber).send({from: this.state.player1 ,value: this.state.web3.utils.toWei(this.state.wager, 'ether')})   //.then((f) => console.log(f))
 
 }
 catch(error){
