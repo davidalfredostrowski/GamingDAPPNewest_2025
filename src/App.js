@@ -5,7 +5,6 @@ import { providers } from 'ethers/providers';
 import GamingAbi from './contractsData/Gaming.json'
 import GamingAddress from './contractsData/Gaming-address.json'
 
-
 function App() {   
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
@@ -50,11 +49,6 @@ function App() {
     await tx1.wait();
   }
 
-
-
-
-
-
   const updateMessage = async () => {
      var line = "" 
 //     const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
@@ -64,30 +58,26 @@ function App() {
       await tx.wait();
 
      const events = await contract.queryFilter("RoundComplete");
+     const objectLength = Object.keys(events).length
+     console.log("objectLength=>", objectLength)
+     console.log("events=>",events)
 
-const objectLength = Object.keys(events).length
-
-console.log("objectLength=>",objectLength)
-console.log("events=>",events)
-
-        const sessions = events.map((event) => ({
-         // player: event.args[0],
-          wager: ethers.formatEther(event.args[0]),
-          playerNumber: event.args[1].toString(),
-          mysteryNumber: event.args[2].toString(),
-          guess: event.args[3],
-          result: event.args[4],
-        }));
-//setMessage(sessions.reverse());
- setPlayerSessions(sessions.reverse()); // Show latest first
+     const sessions = events.map((event) => ({
+       wager: ethers.formatEther(event.args[0]),
+       playerNumber: event.args[1].toString(),
+       mysteryNumber: event.args[2].toString(),
+       guess: event.args[3],
+       result: event.args[4],
+     }));
+     //setMessage(sessions.reverse());
+     setPlayerSessions(sessions.reverse()); // Show latest first
 
   };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h1>Gaming DApp</h1>
-         
-  <div>
+    <div>
             <h3>Play Game</h3>
             <input
               type="number"
@@ -139,11 +129,6 @@ console.log("events=>",events)
                 padding: "10px",
               }}
             >
-
-
-
-
-
        {playerSessions.length === 0 ? (
                 <p>No sessions found</p>
               ) : (
@@ -158,14 +143,9 @@ console.log("events=>",events)
                   </div>
                 ))
               )}
-
-
-
           </div>
-
-          </div>
-
-	  </div>
+        </div>
+      </div>
   );
 };
 
