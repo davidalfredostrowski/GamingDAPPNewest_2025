@@ -13,23 +13,24 @@ function App() {
   const [message, setMessage] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [result, setResult] = useState("");
+
   const [wager, setWager] = useState("");
   const [display, setDisplay] = useState("");
   const [guess, setGuess] = useState(true); // true for higher, false for lower
   const [playerSessions, setPlayerSessions] = useState([]);
 
   useEffect(() => {
-     // Connect to Ethereum
+    // Connect to Ethereum
     const initialize = async () => {
         
-    //const web3Provider = new ethers.JsonRpcProvider("http://ec2-35-90-56-119.us-west-2.compute.amazonaws.com:8545");
-    const web3Provider = new BrowserProvider(window.ethereum);
-    setProvider(web3Provider);
-    const signer = await web3Provider.getSigner(0);
-    setSigner(signer);
-    const GamingContract = new ethers.Contract(GamingAddress.address, GamingAbi.abi, signer); //web3Provider); //signer);
-    setContract(GamingContract);
- };
+//	const web3Provider = new ethers.JsonRpcProvider("http://ec2-35-90-56-119.us-west-2.compute.amazonaws.com:8545");
+        const web3Provider = new BrowserProvider(window.ethereum);
+	setProvider(web3Provider);
+        const signer = await web3Provider.getSigner(0);
+        setSigner(signer);
+        const GamingContract = new ethers.Contract(GamingAddress.address, GamingAbi.abi, signer); //web3Provider); //signer);
+        setContract(GamingContract);
+    };
 
     initialize();
   }, [GamingAddress, GamingAbi]);
@@ -43,11 +44,13 @@ function App() {
 
 
   const fundGame = async () => {
-    var line = ""
-    console.log("Pupdate messaage")
-    //        if (contract && newMessage) {
-    const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
-    await tx1.wait();
+ var line = ""
+console.log ("did i make it")
+          console.log("Pupdate messaage")
+
+//        if (contract && newMessage) {
+   const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
+        await tx1.wait();
   }
 
 
@@ -56,19 +59,39 @@ function App() {
 
 
   const updateMessage = async () => {
-     var line = "" 
-//     const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
-//     await tx1.wait();
-     const tx = await contract.winOrLose(display , guess , {from: signer[0] ,value: ethers.parseEther(wager) })
+ var line = "" 
+
+   const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
+        await tx1.wait();
+
+
+
+	  console.log ("did i make it")
+	  console.log("Pupdate messaage")
+      const tx = await contract.winOrLose(display , guess , {from: signer[0] ,value: ethers.parseEther(wager) })
    //   const tx = await contract.set(GamingMessage);
       await tx.wait();
 
-     const events = await contract.queryFilter("RoundComplete");
+  const events = await contract.queryFilter("RoundComplete");
 
 const objectLength = Object.keys(events).length
 
 console.log("objectLength=>",objectLength)
 console.log("events=>",events)
+console.log("events[0].args=>",events[objectLength-1].args)
+console.log("events[0].args[4]=>",events[objectLength-1].args[4])
+var output = ethers.formatEther(events[0].args[0])
+console.log("output0", output)	  
+var output2 = events[0].args[1].toString()
+console.log("output2", output2)
+
+var output3 = events[0].args[2].toString()
+console.log("output3", output3)
+
+var output4 = JSON.stringify(events[0].args[3])
+console.log("output4", output4)
+line = output + output2 + output3 + output4 
+console.log("line", line) 
 
         const sessions = events.map((event) => ({
          // player: event.args[0],

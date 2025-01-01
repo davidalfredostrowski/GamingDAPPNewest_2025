@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
 
 contract Gaming {
     /* Our Online gaming contract */
@@ -43,8 +43,8 @@ contract Gaming {
     event GameFunded(address funder, uint amount);
 
     function mysteryNumber() private view returns (uint) {
-        //uint randomNumber = uint(blockhash(block.number-1))%10 + 1;
-        uint randomNumber = 5;
+        uint randomNumber = uint(blockhash(block.number-1))%10 + 1;
+        //uint randomNumber = 5;
 	return randomNumber;
     }
 

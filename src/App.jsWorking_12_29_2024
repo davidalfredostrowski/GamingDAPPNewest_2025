@@ -1,0 +1,160 @@
+import React,{ Component, useState, useEffect } from 'react'
+import { ethers, BrowserProvider } from "ethers";
+import './App.css';
+import { providers } from 'ethers/providers';
+//import HelloAbi from './contractsData/Hello.json'
+//import HelloAddress from './contractsData/Hello-address.json'
+
+import GamingAbi from './contractsData/Gaming.json'
+import GamingAddress from './contractsData/Gaming-address.json'
+
+
+function App() {   
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [message, setMessage] = useState("");
+  const [newMessage, setNewMessage] = useState("");
+  const [result, setResult] = useState("");
+
+
+  useEffect(() => {
+    // Connect to Ethereum
+    const initialize = async () => {
+      //if (window.ethereum) {
+       // const web3Provider = new BrowserProvider("http://ec2-34-221-100-136.us-west-2.compute.amazonaws.com:8545");
+        
+	const web3Provider = new ethers.JsonRpcProvider("http://ec2-35-87-157-198.us-west-2.compute.amazonaws.com:8545");
+
+
+	setProvider(web3Provider);
+
+        const signer = await web3Provider.getSigner(0);
+        setSigner(signer);
+  //      console.log("HelloAddress", HelloAddress.address)
+//	console.log("HelloAbi", HelloAbi)
+  //      console.log("signer", signer)
+       
+        console.log("GamingAddress.address", GamingAddress.address)
+	    console.log("GamingAbi.abi", GamingAbi.abi)
+
+	    const GamingContract = new ethers.Contract(GamingAddress.address, GamingAbi.abi, signer); //web3Provider); //signer);
+        setContract(GamingContract);
+      //} else {
+       // alert("MetaMask is required to use this DApp");
+      //}
+//	const tx1 = await contract.methods.fundGame({ value: ethers.parseEther("100.0")})
+  //      await tx1.wait();
+  //    console.log( "game funded")
+  //    const tx = await contract.winOrLose(11, true, {from: signer[0] ,value: ethers.parseEther("1.0") })
+   //   const tx = await contract.set(GamingMessage);
+   //   await tx.wait();
+   //   console.log("win or lose")
+   //   const win = await contract.getWins()
+    //  console.log( "win" , win)
+
+    };
+
+    initialize();
+  }, [GamingAddress, GamingAbi]);
+
+  const fetchMessage = async () => {
+    if (contract) {
+      const currentMessage = await contract.get();
+      setMessage(currentMessage);
+    }
+  };
+
+  const updateMessage = async () => {
+  
+console.log ("did i make it")
+	  console.log("Pupdate messaage")
+
+//	  if (contract && newMessage) {
+   const tx1 = await contract.fundGame({ value: ethers.parseEther("100.0")})
+        await tx1.wait();
+      console.log( "game funded")
+      const tx = await contract.winOrLose(11, true, {from: signer[0] ,value: ethers.parseEther("1.0") })
+   //   const tx = await contract.set(GamingMessage);
+      await tx.wait();
+      console.log("win or lose")
+      const win = await contract.getWins()
+      console.log( "win" , win)
+      setMessage("junk")
+
+  const events = await contract.queryFilter("RoundComplete");
+
+const objectLength = Object.keys(events).length
+
+console.log("objectLength=>",objectLength)
+console.log("events=>",events)
+console.log("events[0].args=>",events[0].args)
+console.log("events[0].args[4]=>",events[0].args[4])
+var output = ethers.formatEther(events[0].args[0])
+console.log("output0", output)	  
+var output2 = events[0].args[1].toString()
+console.log("output2", output2)
+
+var output3 = events[0].args[2].toString()
+console.log("output3", output3)
+
+var output4 = JSON.stringify(events[0].args[3])
+console.log("output4", output4)
+var line = output + output2 + output3 + output4 
+console.log("line", line) 
+setMessage(JSON.stringify(events[0].args[4]))
+	  // console.log("JSON string2 ", JSON.stringify(events[objectLength-1].returnValues[4]))
+//	this.state.contract.getPastEvents(
+//	{
+//		fromBlock: 0,
+//		toBlock: 'latest'
+//	}).then(function(events) {
+//		console.log(events);
+  //              console.log(events[0].returnValues)
+
+    //            console.log('junk')
+
+//const objectLength = Object.keys(events).length
+  //              console.log('objectLength', objectLength )   
+//		console.log('events[1].returnValues.toString()', events[1].returnValues.toString() )
+
+//		console.log('events[1].returnValues', events[1].returnValues)
+
+ //console.log("JSON string",  JSON.stringify(events[1].returnValues[4])  )
+ //console.log("JSON string2 ", JSON.stringify(events[objectLength-1].returnValues[4])
+//setMessage(JSON.stringify(events[objectLength-1].returnValues[4]));
+
+//	}
+
+
+
+
+//	    const tx = await contract.set(newMessage);
+//      await tx.wait();
+//      setNewMessage("");
+//      fetchMessage(); // Refresh message after updating
+    //}
+  };
+
+  return (
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>Hello World DApp</h1>
+      <p>
+        <strong>Current Message:</strong> {message || "Loading..."}
+      </p>
+      <button onClick={fetchMessage}>Fetch Message</button>
+      <div style={{ marginTop: "20px" }}>
+        <input
+          type="text"
+          placeholder="New Message"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+        <button onClick={updateMessage}>Update Message</button>
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
